@@ -87,8 +87,8 @@ function Timeline({ rows, selectedIds, truth, method, n }) {
           const cx = xScale(Date.parse(`${row.timestamp.replace(' ', 'T')}:00Z`));
           const cy = yScale(row.heart_rate_bpm);
           return <g key={`sample-${row.row_id}`}>
-            <circle cx={cx} cy={cy} r="8" className="sample-halo" />
-            <circle cx={cx} cy={cy} r="5.2" className="sample-point">
+            <circle cx={cx} cy={cy} r="7" className="sample-halo" />
+            <circle cx={cx} cy={cy} r="4.2" className="sample-point">
               <title>{METHOD_NAMES[method]} · row {row.row_id}: {row.timestamp}, {row.heart_rate_bpm} bpm</title>
             </circle>
           </g>;

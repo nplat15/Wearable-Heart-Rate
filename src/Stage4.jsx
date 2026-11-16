@@ -9,7 +9,7 @@ const METHOD_NAMES = {
   stratified: 'Stratified',
 };
 const METHOD_COLORS = {
-  srs: '#25877b',
+  srs: '#d6a34f',
   systematic: '#536eaa',
   stratified: '#b86e4d',
 };

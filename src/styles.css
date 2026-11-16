@@ -312,11 +312,31 @@ tbody tr:nth-child(even) { background: #172b2b; }
 .order-strip-canvas { border: 1px solid var(--line); border-radius: 2px; background: #091718; }
 .challenge-group-counts span { border: 1px solid var(--line); border-radius: 2px; background: #1b302e; color: #e1e8da; }
 .stage4-footer { padding-top: 4px; }
+.chart-wrap { overflow-x: auto; overscroll-behavior-inline: contain; }
+.timeline { min-width: 820px; }
+.population-line { stroke: #78aa9e; stroke-width: 1; stroke-opacity: .28; }
+.population-point { fill: #a9bdb2; fill-opacity: .48; }
+.sample-halo { fill: var(--panel); stroke: var(--cream); stroke-width: 2.8; vector-effect: non-scaling-stroke; }
+.sample-point { fill: var(--signal); stroke: #260e0c; stroke-width: 1.6; vector-effect: non-scaling-stroke; }
+.mean-line { stroke: #f4ecd3; stroke-width: 3.2; stroke-dasharray: 9 6; }
+.chart-legend { color: #e0e7dc; font-size: 11px; }
+.chart-legend .legend-population { background: #8da99c; }
+.chart-legend .legend-sample { width: 12px; height: 12px; background: var(--signal); border: 2px solid var(--cream); box-shadow: none; }
+.chart-legend .legend-mean { border-color: var(--cream); }
+.chart-note { color: #bac8bd; font-size: 11px; }
+.timeline { border: 1px solid #50616a; border-radius: 4px; background: #0c171e; }
+.population-line { stroke: #8fa5ae; stroke-width: 1.05; stroke-opacity: .24; }
+.population-point { fill: #c3ced2; fill-opacity: .72; }
+.sample-halo { fill: #0c171e; stroke: #e5c7a2; stroke-width: 1.6; }
+.sample-point { fill: #e99475; stroke: #39211d; stroke-width: 1.1; }
+.chart-legend .legend-population { background: #c3ced2; }
+.chart-legend .legend-sample { width: 10px; height: 10px; background: #e99475; border: 1.5px solid #e5c7a2; }
 @media (max-width: 760px) {
   .page-shell { width: min(100% - 28px, 1320px); }
   .stage-nav { overflow-x: auto; }
   .stage-nav-button { flex: 0 0 auto; padding-inline: 12px; }
 }
+@media (min-width: 900px) { .timeline { min-width: 0; } }
 @media (prefers-reduced-motion: no-preference) {
   .stage-nav-button, .apply-button { transition: background-color 120ms ease, transform 120ms ease; }
   .apply-button:hover { transform: translate(-1px, -1px); }
