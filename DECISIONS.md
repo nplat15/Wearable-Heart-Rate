@@ -80,5 +80,5 @@ After I test it:
 ## 6. AI use
 
 - Tools used: Codex
-- What I asked my agent to do, and what I checked myself: 
-- Automated checks my agent reported (I did not let it interpret my results):
+- What I asked my agent to do, and what I checked myself: Asked the agent to help design the websie and the expirements. I checked he results.
+- Automated checks my agent reported (I did not let it interpret my results): The agent reported that the production build completed successfully. This confirms the app compiled; it does not verify or interpret my sampling results.
