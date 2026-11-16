@@ -1,5 +1,4 @@
-import { useMemo, useState } from 'react';
-import heartRateCsv from '../data/heart_rate_week.csv?raw';
+import { useEffect, useMemo, useState } from 'react';
 import { drawSample, mean } from './sampling.js';
 import Stage4 from './Stage4.jsx';
 import Stage5 from './Stage5.jsx';
@@ -25,8 +24,6 @@ function parseCsv(text) {
     ]));
   });
 }
-
-const population = parseCsv(heartRateCsv);
 
 function formatBpm(value) {
   return `${value.toFixed(5)} bpm`;
@@ -155,14 +152,34 @@ function SystematicDetails({ draw }) {
 }
 
 export default function App() {
-  const truth = useMemo(() => mean(population), []);
+  const [population, setPopulation] = useState(null);
+  const [loadError, setLoadError] = useState('');
+  const truth = useMemo(() => (population ? mean(population) : 0), [population]);
   const [activeStage, setActiveStage] = useState('sample');
   const [applied, setApplied] = useState({ method: 'srs', n: 100, seed: INITIAL_SEED });
   const [draft, setDraft] = useState({ method: 'srs', n: '100', seed: String(INITIAL_SEED) });
-  const [draw, setDraw] = useState(() => drawSample(population, { method: 'srs', n: 100, seed: INITIAL_SEED, groupColumn: GROUP_COLUMN }));
+  const [draw, setDraw] = useState(null);
   const [error, setError] = useState('');
-  const sampleIds = useMemo(() => new Set(draw.sample.map((row) => row.row_id)), [draw]);
+  const sampleIds = useMemo(() => new Set(draw?.sample.map((row) => row.row_id) ?? []), [draw]);
   const hasUnappliedChanges = draft.method !== applied.method || Number(draft.n) !== applied.n || Number(draft.seed) !== applied.seed;
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch(`${import.meta.env.BASE_URL}heart_rate_week.csv`, { signal: controller.signal })
+      .then((response) => {
+        if (!response.ok) throw new Error(`Dataset request failed (${response.status}).`);
+        return response.text();
+      })
+      .then((csv) => {
+        const rows = parseCsv(csv);
+        setPopulation(rows);
+        setDraw(drawSample(rows, { method: 'srs', n: 100, seed: INITIAL_SEED, groupColumn: GROUP_COLUMN }));
+      })
+      .catch((cause) => {
+        if (cause.name !== 'AbortError') setLoadError(cause instanceof Error ? cause.message : 'The dataset could not be loaded.');
+      });
+    return () => controller.abort();
+  }, []);
 
   function updateDraft(key, value) {
     setDraft((current) => ({ ...current, [key]: value }));
@@ -193,6 +210,13 @@ export default function App() {
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'The sample could not be drawn.');
     }
+  }
+
+  if (loadError) {
+    return <main className="page-shell"><section className="panel data-load-state" role="alert"><p className="eyebrow">DATA FILE UNAVAILABLE</p><h1>The heart-rate data could not be loaded.</h1><p>Check that <code>heart_rate_week.csv</code> is available at this site’s base path, then reload the page.</p><p className="load-error-detail">{loadError}</p></section></main>;
+  }
+  if (!population || !draw) {
+    return <main className="page-shell"><section className="panel data-load-state" role="status"><p className="eyebrow">WEARABLE HEART RATE · SAMPLING LAB</p><h1>Loading the recorded week…</h1><p>The app is fetching the CSV population from this site.</p></section></main>;
   }
 
   const methodName = METHOD_NAMES[applied.method];

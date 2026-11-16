@@ -331,6 +331,11 @@ tbody tr:nth-child(even) { background: #172b2b; }
 .sample-point { fill: #e99475; stroke: #39211d; stroke-width: 1.1; }
 .chart-legend .legend-population { background: #c3ced2; }
 .chart-legend .legend-sample { width: 10px; height: 10px; background: #e99475; border: 1.5px solid #e5c7a2; }
+.data-load-state { max-width: 680px; margin: 12vh auto; padding: 28px; }
+.data-load-state h1 { font-size: clamp(25px, 4vw, 36px); }
+.data-load-state p { color: var(--muted); line-height: 1.6; }
+.data-load-state code { color: var(--ghost); }
+.data-load-state .load-error-detail { color: #ffc2ad; font-size: 13px; }
 @media (max-width: 760px) {
   .page-shell { width: min(100% - 28px, 1320px); }
   .stage-nav { overflow-x: auto; }
