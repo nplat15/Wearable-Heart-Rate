@@ -156,6 +156,7 @@ function SystematicDetails({ draw }) {
 
 export default function App() {
   const truth = useMemo(() => mean(population), []);
+  const [activeStage, setActiveStage] = useState('sample');
   const [applied, setApplied] = useState({ method: 'srs', n: 100, seed: INITIAL_SEED });
   const [draft, setDraft] = useState({ method: 'srs', n: '100', seed: String(INITIAL_SEED) });
   const [draw, setDraw] = useState(() => drawSample(population, { method: 'srs', n: 100, seed: INITIAL_SEED, groupColumn: GROUP_COLUMN }));
@@ -201,10 +202,17 @@ export default function App() {
     <main className="page-shell">
       <header className="topbar">
         <div className="brand-mark" aria-hidden="true">JS</div>
-        <div><p className="eyebrow">SAMPLING EXPLORER · STAGE 3</p><p className="brand-name">Judge the Sample</p></div>
+        <div><p className="eyebrow">WEARABLE HEART RATE · SAMPLING LAB</p><p className="brand-name">Judge the Sample</p></div>
         <span className="scenario-tag">Wearable heart rate</span>
       </header>
 
+      <nav className="stage-nav" aria-label="Project stages">
+        <button type="button" className={activeStage === 'sample' ? 'stage-nav-button active' : 'stage-nav-button'} aria-current={activeStage === 'sample' ? 'page' : undefined} onClick={() => setActiveStage('sample')}>Stage 3 <span>Sample</span></button>
+        <button type="button" className={activeStage === 'experiments' ? 'stage-nav-button active' : 'stage-nav-button'} aria-current={activeStage === 'experiments' ? 'page' : undefined} onClick={() => setActiveStage('experiments')}>Stage 4 <span>Experiments</span></button>
+        <button type="button" className={activeStage === 'challenge' ? 'stage-nav-button active' : 'stage-nav-button'} aria-current={activeStage === 'challenge' ? 'page' : undefined} onClick={() => setActiveStage('challenge')}>Stage 5 <span>Challenge</span></button>
+      </nav>
+
+      <div className="stage-view" hidden={activeStage !== 'sample'}>
       <section className="intro">
         <div>
           <p className="eyebrow">FINITE POPULATION</p>
@@ -255,8 +263,13 @@ export default function App() {
       </section>
 
       <footer className="footer-note">Stage 3 · Results show the currently applied settings only; applying a new sample replaces the current view.</footer>
+      </div>
+      <div className="stage-view" hidden={activeStage !== 'experiments'}>
       <Stage4 population={population} truth={truth} />
+      </div>
+      <div className="stage-view" hidden={activeStage !== 'challenge'}>
       <Stage5 population={population} />
+      </div>
     </main>
   );
 }
