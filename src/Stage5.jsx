@@ -116,6 +116,7 @@ export default function Stage5({ population }) {
         </div>
         <div className="order-strips">
           <OrderStrip rows={population} label="Baseline: original time order" />
+          <div className="order-transition" aria-hidden="true"><span>REORDER BY ACTIVITY STATE</span><strong>→</strong></div>
           <OrderStrip rows={modifiedPopulation} label={`Modified: grouped by ${groupOrder.join(' → ')}`} />
         </div>
         <p className="challenge-note">Each colored position represents one row in sampling order. In the modified copy, timestamps remain attached to their original row IDs, and chronological order is preserved within each activity-state group. Only the population copy is reordered.</p>
@@ -146,14 +147,21 @@ export default function Stage5({ population }) {
               <strong>{population.length.toLocaleString()} row positions · n = {challengeRun.n}</strong>
               <span>{challengeRun.repetitions.toLocaleString()} repetitions for Monte Carlo results · seed {challengeRun.seed}</span>
             </div>
-            <div className="experiment-grid challenge-result-grid">
-              {challengeRun.results.map(({ condition, summary }) => <HistogramCard
-                key={`${condition}-${summary.method}`}
-                result={summary}
-                truth={summary.truth}
-                domain={domain}
-                conditionLabel={condition.toUpperCase()}
-              />)}
+            <div className="challenge-condition-spread">
+              {['BASELINE', 'MODIFIED'].map((condition) => (
+                <section className={`challenge-condition ${condition.toLowerCase()}-condition`} key={condition} aria-label={`${condition} population results`}>
+                  <div className="condition-heading"><span className="condition-number">{condition === 'BASELINE' ? 'A' : 'B'}</span><h4>{condition} ORDER</h4><span>{condition === 'BASELINE' ? 'Chronological row order' : 'Activity-state grouped order'}</span></div>
+                  <div className="challenge-method-pair">
+                    {challengeRun.results.filter((item) => item.condition.toUpperCase() === condition).map(({ summary }) => <HistogramCard
+                      key={`${condition}-${summary.method}`}
+                      result={summary}
+                      truth={summary.truth}
+                      domain={domain}
+                      conditionLabel={condition}
+                    />)}
+                  </div>
+                </section>
+              ))}
             </div>
           </>}
       </section>

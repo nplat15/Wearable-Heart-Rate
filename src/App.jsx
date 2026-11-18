@@ -84,8 +84,8 @@ function Timeline({ rows, selectedIds, truth, method, n }) {
           const cx = xScale(Date.parse(`${row.timestamp.replace(' ', 'T')}:00Z`));
           const cy = yScale(row.heart_rate_bpm);
           return <g key={`sample-${row.row_id}`}>
-            <circle cx={cx} cy={cy} r="7" className="sample-halo" />
-            <circle cx={cx} cy={cy} r="4.2" className="sample-point">
+            <circle cx={cx} cy={cy} r="5.8" className="sample-halo" />
+            <circle cx={cx} cy={cy} r="3.3" className="sample-point">
               <title>{METHOD_NAMES[method]} · row {row.row_id}: {row.timestamp}, {row.heart_rate_bpm} bpm</title>
             </circle>
           </g>;
@@ -243,11 +243,11 @@ export default function App() {
           <h1>One wearer, one recorded week.</h1>
           <p className="intro-copy">Explore the <strong>{population.length.toLocaleString()} recorded minutes</strong> in this file. The timeline follows device local time; minutes without a reading are absent.</p>
         </div>
-        <div className="population-pill"><span className="pill-dot" /> Baseline population <strong>{population.length.toLocaleString()} rows</strong></div>
+        <div className="population-pill population-stamp"><span className="pill-dot" /><span className="stamp-label">FINITE POPULATION</span><strong>{population.length.toLocaleString()}</strong><span className="stamp-unit">RECORDED MINUTES</span></div>
       </section>
 
-      <section className="panel controls-panel" aria-labelledby="sample-controls-heading">
-        <div className="controls-copy"><p className="eyebrow">SHARED TIMELINE WORKSPACE</p><h2 id="sample-controls-heading">Choose a sampling method and settings</h2><p>Change the controls, then apply them together to update the selected rows and estimate.</p></div>
+      <section className="controls-panel" aria-labelledby="sample-controls-heading">
+        <div className="controls-copy"><p className="eyebrow">FIELD SETTINGS · 01</p><h2 id="sample-controls-heading">Choose a sampling method</h2><p>Set the method, sample size, and seed, then apply them to the timeline.</p></div>
         <form className="sampling-form" onSubmit={applySample}>
           <div className="sampling-fields">
             <div className="field-group method-field"><label htmlFor="method-input">Sampling method</label><select id="method-input" value={draft.method} onChange={(event) => updateDraft('method', event.target.value)}>
@@ -262,13 +262,12 @@ export default function App() {
         </form>
       </section>
 
-      <section className="metric-grid" aria-label="Population and current sample estimate">
-        <article className="metric-card population-metric"><div className="metric-heading"><span className="metric-icon">μ</span><span>TRUE POPULATION MEAN</span></div><strong className="metric-value">{formatBpm(truth)}</strong><p>All {population.length.toLocaleString()} recorded minutes</p></article>
-        <article className="metric-card sample-metric"><div className="metric-heading"><span className="metric-icon">x̄</span><span>{estimateTitle}</span></div><strong className="metric-value">{formatBpm(draw.estimate)}</strong><p>{methodName} · all {applied.n.toLocaleString()} selected rows · {applied.seed === undefined ? 'exact' : `seed ${applied.seed}`}</p></article>
-      </section>
-
-      <section className="panel chart-panel" aria-labelledby="timeline-heading">
-        <div className="section-heading"><div><p className="eyebrow">POPULATION TIMELINE</p><h2 id="timeline-heading">Every recorded minute, in time order</h2></div><div className="chart-meta"><span className="chart-mean-badge">True mean · {formatBpm(truth)}</span><span className="chart-count">{population.length.toLocaleString()} / {population.length.toLocaleString()} rows shown</span></div></div>
+      <section className="panel chart-panel timeline-spread" aria-labelledby="timeline-heading">
+        <div className="section-heading timeline-heading"><div><p className="eyebrow">THE RECORDED WEEK · 01</p><h2 id="timeline-heading">Every recorded minute, in time order</h2></div><div className="chart-meta"><span className="chart-count">{population.length.toLocaleString()} / {population.length.toLocaleString()} rows shown</span></div></div>
+        <section className="metric-grid timeline-callouts" aria-label="Population and current sample estimate">
+          <article className="metric-card population-metric"><div className="metric-heading"><span className="metric-icon">μ</span><span>TRUE POPULATION MEAN</span></div><strong className="metric-value">{formatBpm(truth)}</strong><p>All {population.length.toLocaleString()} recorded minutes</p></article>
+          <article className="metric-card sample-metric"><div className="metric-heading"><span className="metric-icon">x̄</span><span>{estimateTitle}</span></div><strong className="metric-value">{formatBpm(draw.estimate)}</strong><p>{methodName} · all {applied.n.toLocaleString()} selected rows · {applied.seed === undefined ? 'exact' : `seed ${applied.seed}`}</p></article>
+        </section>
         <Timeline rows={population} selectedIds={sampleIds} truth={truth} method={applied.method} n={applied.n} />
       </section>
 

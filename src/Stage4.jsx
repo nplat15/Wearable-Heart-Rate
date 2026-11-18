@@ -122,7 +122,7 @@ export function HistogramCard({ result, truth, domain, conditionLabel = 'BASELIN
   );
 }
 
-function ExperimentResults({ experiment, truth, title }) {
+function ExperimentResults({ experiment, truth, title, layout }) {
   if (!experiment) {
     return <div className="experiment-empty"><p>Run this experiment to create its estimate distributions and summaries. It will use the settings shown above.</p></div>;
   }
@@ -133,7 +133,7 @@ function ExperimentResults({ experiment, truth, title }) {
         <strong>{title} · Baseline population</strong>
         <span>{experiment.repetitions.toLocaleString()} repetitions per Monte Carlo result · seed {experiment.seed}</span>
       </div>
-      <div className="experiment-grid">
+      <div className={`experiment-grid ${layout}`}>
         {experiment.results.map((result) => <HistogramCard key={`${result.method}-${result.n}`} result={result} truth={truth} domain={domain} />)}
       </div>
       {experiment.reusedSrs100 && <p className="reuse-note">The matching SRS result at n = 100 was reused from Experiment A.</p>}
@@ -217,14 +217,14 @@ export default function Stage4({ population, truth }) {
         {error && <p className="validation-message" role="alert">{error}</p>}
       </section>
 
-      <section className="panel experiment-section" aria-labelledby="experiment-a-heading">
+      <section className="panel experiment-section experiment-a" aria-labelledby="experiment-a-heading">
         <div className="section-heading experiment-section-heading"><div><p className="eyebrow">EXPERIMENT A</p><h3 id="experiment-a-heading">Methods at n = 100</h3><p>Compare the three methods on the same baseline population and total sample size.</p></div><button className="apply-button" type="button" onClick={runA}>Run Experiment A</button></div>
-        <ExperimentResults experiment={experimentA} truth={truth} title="Experiment A" />
+        <ExperimentResults experiment={experimentA} truth={truth} title="Experiment A" layout="method-triptych" />
       </section>
 
-      <section className="panel experiment-section" aria-labelledby="experiment-b-heading">
+      <section className="panel experiment-section experiment-b" aria-labelledby="experiment-b-heading">
         <div className="section-heading experiment-section-heading"><div><p className="eyebrow">EXPERIMENT B</p><h3 id="experiment-b-heading">Simple random sample sizes</h3><p>Compare SRS estimates at n = 1, 10, and 100 while keeping the population and method fixed.</p></div><button className="apply-button" type="button" onClick={runB}>Run Experiment B</button></div>
-        <ExperimentResults experiment={experimentB} truth={truth} title="Experiment B" />
+        <ExperimentResults experiment={experimentB} truth={truth} title="Experiment B" layout="sample-size-triptych" />
       </section>
 
       <p className="stage4-footer">Both experiments use the baseline population only. Rerunning an experiment replaces its current results; results with different settings are never pooled.</p>
